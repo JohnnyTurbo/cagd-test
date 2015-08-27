@@ -18,10 +18,12 @@ public class MovingPlatform : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-        other.SendMessage("OnPlatform", transform, SendMessageOptions.DontRequireReceiver);
+		Debug.Log("On Platform");
+		other.SendMessage("OnPlatform", transform, SendMessageOptions.DontRequireReceiver);
     }
 
     void OnTriggerExit(Collider other) {
-        other.SendMessage("OffPlatform", transform, SendMessageOptions.DontRequireReceiver);
+		Debug.Log ("Off Platform");
+		other.SendMessage("OffPlatform", transform, SendMessageOptions.DontRequireReceiver);
     }
 }

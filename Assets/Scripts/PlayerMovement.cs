@@ -36,4 +36,63 @@ public class PlayerMovement : MonoBehaviour {
      *      You will probably need to use the Update function as well as create functions for moving platforms and enemies
      */
 
+	public float speed = 5f;
+	public float gravity = 25f;
+	public float jumpSpeed = 15f;
+	//public GameObject enemy;
+
+	private float movement;
+	private Vector3 vertDirection = Vector3.zero;
+	private bool onPlatform = false;
+	private Vector3 diff;
+	private Vector3 platPosition;
+	//private CapsuleCollider playerCollider = this.GetComponent<CapsuleCollider>();
+
+
+	void Update(){
+		// Left/Right Movement
+		KeyboardInput keyboardInput = GetComponent<KeyboardInput> ();
+		movement = keyboardInput.XAxis;
+		transform.Translate(new Vector3(Time.deltaTime * speed * movement, 0, 0));
+
+		//Up/Down Movement
+		CharacterController controller = GetComponent<CharacterController> ();
+		if (controller.isGrounded) {
+			vertDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+			if (keyboardInput.JumpButtonPressed)
+				vertDirection.y = jumpSpeed;
+		}
+		vertDirection.y -= gravity * Time.deltaTime;
+		controller.Move(vertDirection * Time.deltaTime);
+
+		//*******NOTE*********
+		//I was unable to get Moving platform to fully work, but I hope you can follow my logic of what I was going for
+
+
+		/*if (onPlatform) {
+			transform.Translate(platPosition + diff);
+		}*/
+	}
+
+	//Collision With Enemy
+	void OnControllerColliderHit (ControllerColliderHit hit){
+		//Debug.Log ("Collision");
+		if (hit.gameObject.name == "Enemy") {
+			Application.LoadLevel(0);
+			Debug.Log ("Collision with enemy");
+		}
+	}
+
+	void OnPlatform(Transform platTransform){
+		onPlatform = true;
+		Debug.Log("On Platform is True!");
+		platPosition = platTransform.transform.position;
+		diff = transform.position - platPosition;
+	}
+
+	void OffPlatform(Transform platTransform){
+		onPlatform = false;
+		Debug.Log ("On Platform is False!");
+	}
+
 }
